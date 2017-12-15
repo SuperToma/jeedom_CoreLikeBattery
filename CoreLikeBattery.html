@@ -1,0 +1,104 @@
+<div style="min-width:100px; min-height:100px; position:relative; top:-7px;padding:0px !important;"
+     class="container-fluid tooltips cmd cmd-widget"
+     data-type="info" data-subtype="numeric" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#"
+     title="Valeur du #valueDate#, collectée le #collectDate#">
+
+  <div style="margin-top: 11px; font-size: 11px; margin-bottom: 5px; color: white;font-weight: bold;font-family : Helvetica Neue,Helvetica,Arial,sans-serif;#hideCmdName#">
+    #name_display#
+  </div>
+  <div style="border:1px solid #EEE; height:4px; width:12px; margin-bottom:-1px"></div>
+  <div class="bar cursor"></div>
+  <!-- div style="margin-top:1px; font-size:10px; color:#FFF; font-weight:bold">#state# #unite#</div -->
+
+  <div style="#displayHistory# font-size: 0.8em;" class="col-xs-12 center-block" class="cmdStats">
+    <span title='Min' class='tooltips'>#minHistoryValue#</span>|
+    <span title='Moyenne' class='tooltips'>#averageHistoryValue#</span>|
+    <span title='Max' class='tooltips'>#maxHistoryValue#</span>
+    <i class="#tendance#"></i>
+  </div>
+  <script>
+    jeedom.cmd.update['#id#'] = function(_options){
+      $('.cmd[data-cmd_uid=#uid#] .bar').highcharts().series[0].points[0].update(_options.display_value);
+    }
+
+    if (is_numeric('#state#')) {
+      $('.cmd[data-cmd_uid=#uid#] .bar').empty().highcharts({
+        chart: {
+          events: {
+            click: function (event) {
+              if (!$.mobile && '#history#' == 'history cursor') {
+                $('#md_modal2').dialog({title: "Historique"});
+                $("#md_modal2").load('index.php?v=d&modal=cmd.history&id=#id#').dialog('open');
+              }
+            }
+          },
+          type: 'column',
+          height : 47,
+          width: 20,
+          plotBackgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+          plotBackgroundImage: null,
+          backgroundColor: null,
+          plotBorderColor: '#EEE',
+          plotBorderWidth: 1,
+          plotShadow: false,
+          spacingTop: 1,
+          spacingLeft: 1,
+          spacingRight: 1,
+          spacingBottom: 1,
+          borderWidth : 1,
+        },
+        title: null,
+        legend: false,
+        tooltip: {
+          enabled: false
+        },
+        xAxis: {
+          min: 0,
+          max: 0,
+          visible: false,
+        },
+        yAxis: {
+          visible: false,
+          min: #minValue#,
+          max: #maxValue#
+        },
+        labels : {enabled: false},
+        plotOptions: {
+          column: {
+            animation: true,
+            groupPadding:0,
+            pointPadding:0,
+            pointRange:1
+          },
+          series: {
+            color: '#cmdColor#',
+            borderWidth: 0,
+            pointPadding: 0.01,
+            groupPadding: 0,
+            dataLabels: {
+              enabled: true,
+              inside: true,
+              borderWidth: 0,
+              textOutline: false,
+            },
+          },
+        },
+        credits: {
+          enabled: false
+        },
+        exporting : {
+          enabled: false
+        },
+        series: [{
+          name: '',
+          data: [{
+            y: Math.round(parseFloat('#state#') * 10) / 10,
+          }],
+        }]
+      });
+    } else {
+      $('.cmd[data-cmd_uid=#uid#] .bar').append('<center><span class="label label-danger" style="margin-top : 5px;">#state#</span></center>');
+    }
+  </script>
+
+</div>
